@@ -1,0 +1,37 @@
+PREFIX was: <https://was-course.interactions.ics.unisg.ch/farm-ontology#>
+PREFIX hmas: <https://purl.org/hmas/>
+PREFIX td: <https://www.w3.org/2019/wot/td#>
+PREFIX wotsec: <https://www.w3.org/2019/wot/security#>
+PREFIX htv: <http://www.w3.org/2011/http#>
+PREFIX hctl: <https://www.w3.org/2019/wot/hypermedia#>
+PREFIX js: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+INSERT {
+    GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#>
+    {
+        ?farm hmas:contains ?newLandSection1.
+        ?farm hmas:contains ?newLandSection2.
+        ?farm hmas:contains ?newLandSection3.
+        ?farm hmas:contains ?newLandSection4.
+
+        ?newLandSection1 a td:Thing, was:LandSection;
+  			td:title "A landsection (1) on a farm";
+        .
+        ?newLandSection4 a td:Thing, was:LandSection;
+  			td:title "A landsection (2) on a farm";
+        .
+        ?newLandSection2 a td:Thing, was:LandSection;
+  			td:title "A landsection (2) on a farm";
+        .
+        ?newLandSection3 a td:Thing, was:LandSection;
+  			td:title "A landsection (2) on a farm";
+        .
+    }.
+} WHERE {
+	?farm a was:Farm.
+  	BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-1")) AS ?newLandSection1)
+    BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-2")) AS ?newLandSection2)
+    BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-3")) AS ?newLandSection3)
+    BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-4")) AS ?newLandSection4)
+}

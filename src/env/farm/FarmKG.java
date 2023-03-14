@@ -3,40 +3,35 @@ package farm;
 import cartago.Artifact;
 import cartago.OPERATION;
 import cartago.OpFeedbackParam;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 
 public class FarmKG extends Artifact {
 
-    private static final String USERNAME = "danai";
-    private static final String PASSWORD = "was";
+    private static final String USERNAME = "was-students";
+    private static final String PASSWORD = "knowledge-representation-is-fun";
 
     private String repoLocation;
 
     private static String PREFIXES = "PREFIX was: <https://was-course.interactions.ics.unisg.ch/farm-ontology#>\n"+
-    "PREFIX hmas: <https://purl.org/hmas/>\n" +
-    "PREFIX td: <https://www.w3.org/2019/wot/td#>\n";
-    
+            "PREFIX hmas: <https://purl.org/hmas/>\n" +
+            "PREFIX td: <https://www.w3.org/2019/wot/td#>\n";
+
 
     public void init(String repoLocation) {
         this.repoLocation = repoLocation;
@@ -48,12 +43,18 @@ public class FarmKG extends Artifact {
         String farmValue = null;
 
         // sets your variable name for the farm to be queried
-        String farmVariableName = "farm";
+        String farmVariableName = "farm-8dd5501e-fa80-4e97-814e-bc09ff8cb1af";
 
         // constructs query
-        String queryStr = PREFIXES + "SELECT ?farm WHERE { ?" + farmVariableName + " a was:Farm. }";
+        String queryString = "SELECT ?farm WHERE {\n" +
+                "GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#> {\n" +
+                "   bind (<https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#"+farmVariableName+"> as ?farm)\n" +
+                "   ?farm a was:Farm.\n" +
+                "   }\n" +
+                "}";
+        String queryStr = PREFIXES + queryString;
 
-        /* Example SPARQL query 
+        /* Example SPARQL query
          * PREFIX was: <https://was-course.interactions.ics.unisg.ch/farm-ontology#>
          * PREFIX hmas: <https://purl.org/hmas/>
          * PREFIX td: <https://www.w3.org/2019/wot/td#>
@@ -62,7 +63,7 @@ public class FarmKG extends Artifact {
 
         // executes query
         JsonArray farmBindings = executeQuery(queryStr);
-        
+
         /* Example JSON result
          * [{"farm":
          *  {
@@ -74,7 +75,7 @@ public class FarmKG extends Artifact {
 
         // handles result as JSON object
         JsonObject firstBinding = farmBindings.get(0).getAsJsonObject();
-        JsonObject farmBinding = firstBinding.getAsJsonObject(farmVariableName);
+        JsonObject farmBinding = firstBinding.getAsJsonObject("farm");
         farmValue = farmBinding.getAsJsonPrimitive("value").getAsString();
 
         // sets the value of interest to the OpFeedbackParam
@@ -82,22 +83,22 @@ public class FarmKG extends Artifact {
     }
 
 
-    @OPERATION 
+    @OPERATION
     public void queryThing(String farm, String offeredAffordance, OpFeedbackParam<String> thingDescription) {
         // the variable where we will store the result to be returned to the agent
-        String tdValue = null; 
+        String tdValue = null;
 
         // sets your variable name for the farm to be queried
         String tdVariableName = "td";
 
         // constructs query
-        String queryStr = PREFIXES + "SELECT ?" + tdVariableName + " WHERE {\n" + 
-            "<" + farm + "> hmas:contains ?thing.\n" +
-            "?thing td:hasActionAffordance ?aff.\n" +
-            "?thing hmas:hasProfile ?" + tdVariableName + ".\n" +
-            "?aff a <" + offeredAffordance +">.} LIMIT 1";
-        
-        /* Example SPARQL query 
+        String queryStr = PREFIXES + "SELECT ?" + tdVariableName + " WHERE {\n" +
+                "<" + farm + "> hmas:contains ?thing.\n" +
+                "?thing td:hasActionAffordance ?aff.\n" +
+                "?thing hmas:hasProfile ?" + tdVariableName + ".\n" +
+                "?aff a <" + offeredAffordance +">.} LIMIT 1";
+
+        /* Example SPARQL query
          * PREFIX was: <https://was-course.interactions.ics.unisg.ch/farm-ontology#>
          * PREFIX hmas: <https://purl.org/hmas/>
          * PREFIX td: <https://www.w3.org/2019/wot/td#>
@@ -120,7 +121,7 @@ public class FarmKG extends Artifact {
          *  }
          * }]
          */
-        
+
         // handles result as JSON object
         JsonObject firstBinding = tdBindings.get(0).getAsJsonObject();
         JsonObject tdBinding = firstBinding.getAsJsonObject(tdVariableName);
@@ -135,26 +136,81 @@ public class FarmKG extends Artifact {
         // the variable where we will store the result to be returned to the agent
         Object[] sectionsValue = new Object[]{ "fakeSection1", "fakeSection2", "fakeSection3", "fakeSection4" };
 
+        String queryString = "SELECT ?LandSection WHERE {\n" +
+                "GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#> {\n" +
+                "   bind (<"+farm+"> as ?farm)\n" +
+                "   ?farm a was:Farm.\n" +
+                "   ?farm hmas:contains ?LandSection.\n" +
+                "   ?LandSection a was:LandSection. \n" +
+                " }\n" +
+                "}";
+        String queryStr = PREFIXES + queryString;
+
+        JsonArray farmBindings = executeQuery(queryStr);
+
+        final var list = new ArrayList<Object>();
+        for(int i = 0; i < 4; i++) {
+            JsonObject jsonElement = farmBindings.get(i).getAsJsonObject();
+            JsonObject tdBinding = jsonElement.getAsJsonObject("LandSection");
+            String value = tdBinding.getAsJsonPrimitive("value").getAsString();
+            list.add(value);
+        }
         // sets the value of interest to the OpFeedbackParam
-        sections.set(sectionsValue);
+        sections.set(list.toArray());
     }
 
     @OPERATION
-    public void querySectionCoordinates(String section, OpFeedbackParam<Object[]> coordinates) {
+    public void querySectionCoordinates(String LandSection, OpFeedbackParam<Object[]> coordinates) {
         // the variable where we will store the result to be returned to the agent
         Object[] coordinatesValue = new Object[]{ 0, 0, 1, 1 };
 
+        String queryString = "SELECT ?coordinates WHERE {\n" +
+                "GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#> {\n" +
+                "   bind (<"+LandSection+"> as ?LandSection)\n" +
+                "   ?LandSection a was:LandSection. \n" +
+                "   ?LandSection hmas:contains ?Coordinates.\n" +
+                "   ?Coordinates td:hasCoordinates ?coordinates\n" +
+                " }\n" +
+                "}";
+        String queryStr = PREFIXES + queryString;
+
+        JsonArray farmBindings = executeQuery(queryStr);
+
+        JsonObject firstBinding = farmBindings.get(0).getAsJsonObject();
+
+        JsonObject tdBinding = firstBinding.getAsJsonObject("coordinates");
+        final var tdValue = tdBinding.getAsJsonPrimitive("value").getAsString();
+        String[] split = tdValue.split(",");
+
         // sets the value of interest to the OpFeedbackParam
-        coordinates.set(coordinatesValue);
+        Object[] t = Arrays.stream(split).map(Integer::parseInt).toArray();
+        coordinates.set(t);
     }
 
-    @OPERATION 
-    public void queryCropOfSection(String section, OpFeedbackParam<String> crop) {
+    @OPERATION
+    public void queryCropOfSection(String LandSection, OpFeedbackParam<String> crop) {
         // the variable where we will store the result to be returned to the agent
         String cropValue = "fakeCrop";
+        Object[] coordinatesValue = new Object[]{ 0, 0, 1, 1 };
+
+        String queryString = "\n" +
+                "SELECT ?Crop WHERE {\n" +
+                "GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#> {\n" +
+                " <"+LandSection+"> hmas:contains ?Crop.\n" +
+                "   ?Crop a was:Crop.\n" +
+                " }\n" +
+                "}\n";
+        String queryStr = PREFIXES + queryString;
+
+        JsonArray farmBindings = executeQuery(queryStr);
+
+        JsonObject firstBinding = farmBindings.get(0).getAsJsonObject();
+
+        JsonObject tdBinding = firstBinding.getAsJsonObject("Crop");
+        final var tdValue = tdBinding.getAsJsonPrimitive("value").getAsString();
 
         // sets the value of interest to the OpFeedbackParam
-        crop.set(cropValue);
+        crop.set(tdValue);
     }
 
     @OPERATION
@@ -162,13 +218,31 @@ public class FarmKG extends Artifact {
         // the variable where we will store the result to be returned to the agent
         Integer moistureLevelValue = 120;
 
+        String queryString = "SELECT ?moisture WHERE {\n" +
+                "GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#> {\n" +
+                "   bind (<"+crop+"> as ?crop)\n" +
+                "   ?crop td:hasrequiredMoisture ?moisture. \n" +
+                " }\n" +
+                "}";
+        String queryStr = PREFIXES + queryString;
+
+        JsonArray farmBindings = executeQuery(queryStr);
+
+        JsonObject firstBinding = farmBindings.get(0).getAsJsonObject();
+
+        JsonObject tdBinding = firstBinding.getAsJsonObject("moisture");
+        final var tdValue = tdBinding.getAsJsonPrimitive("value").getAsString();
+
         // sets the value of interest to the OpFeedbackParam
-        level.set(moistureLevelValue);
+        final var value = Integer.parseInt(tdValue);
+
+        // sets the value of interest to the OpFeedbackParam
+        level.set(value);
     }
 
     private JsonArray executeQuery(String queryStr) {
         String queryUrl = this.repoLocation + "?query=" +  URLEncoder.encode(queryStr, StandardCharsets.UTF_8);
-        
+
         try {
             URI uri = new URI(queryUrl);
             String authString = USERNAME + ":" + PASSWORD;
@@ -176,12 +250,12 @@ public class FarmKG extends Artifact {
             String encodedAuth = Base64.getEncoder().encodeToString(authBytes);
 
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .header("Authorization", "Basic " + encodedAuth)
-                .header("Accept", "application/sparql-results+json")
-                .GET()
-                .build();
-             
+                    .uri(uri)
+                    .header("Authorization", "Basic " + encodedAuth)
+                    .header("Accept", "application/sparql-results+json")
+                    .GET()
+                    .build();
+
             HttpClient client = HttpClient.newHttpClient();
             try {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

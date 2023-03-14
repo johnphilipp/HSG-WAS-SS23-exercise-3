@@ -5,14 +5,16 @@ This repository contains:
 to retrieve knowledge about the world — and to use that knowledge to manage a farm.
 
 ## Table of Contents
-- [Project structure](#project-structure)
-- [Task 2](#task-2)
-  - [Task 2.1](#task-21)
-  - [Task 2.2](#task-22)
-  - [Task 2.3](#task-23)
-- [How to run the project](#how-to-run-the-project)
-  1. [Run the mockserver that mocks the tractors' HTTP APIs](#1-run-the-mockserver-that-mocks-the-tractors-http-apis)
-  2. [Run the JaCaMo application](#2-run-the-jacamo-application)
+- [Exercise 3: Web Ontologies and Knowledge Graphs](#exercise-3-web-ontologies-and-knowledge-graphs)
+  - [Table of Contents](#table-of-contents)
+  - [Project structure](#project-structure)
+  - [Task 2](#task-2)
+    - [Task 2.1](#task-21)
+    - [Task 2.2](#task-22)
+    - [Task 2.3](#task-23)
+  - [How to run the project](#how-to-run-the-project)
+    - [1. Run the mockserver that mocks the tractors' HTTP APIs](#1-run-the-mockserver-that-mocks-the-tractors-http-apis)
+    - [2. Run the JaCaMo application](#2-run-the-jacamo-application)
 
 ## Project structure
 ```

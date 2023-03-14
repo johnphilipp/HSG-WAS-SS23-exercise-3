@@ -1,0 +1,43 @@
+PREFIX was: <https://was-course.interactions.ics.unisg.ch/farm-ontology#>
+PREFIX hmas: <https://purl.org/hmas/>
+PREFIX td: <https://www.w3.org/2019/wot/td#>
+PREFIX wotsec: <https://www.w3.org/2019/wot/security#>
+PREFIX htv: <http://www.w3.org/2011/http#>
+PREFIX hctl: <https://www.w3.org/2019/wot/hypermedia#>
+PREFIX js: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+INSERT {
+    GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#>
+    {
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-1> hmas:contains ?newCrop1.
+        ?newCrop1 a td:Thing, was:Crop.
+        ?newCrop1 a td:Thing, was:Wheat;
+  			td:title "A crop (1) on a landsection (1)";
+     		td:hasrequiredMoisture "120";
+        .
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-2> hmas:contains ?newCrop2.
+        ?newCrop2 a td:Thing, was:Crop.
+        ?newCrop2 a td:Thing, was:Wheat;
+  			td:title "A crop (2) on a landsection (2)";
+     		td:hasrequiredMoisture "120";
+        .
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-3> hmas:contains ?newCrop3.
+        ?newCrop3 a td:Thing, was:Crop.
+        ?newCrop3 a td:Thing, was:Corn;
+  			td:title "A crop (3) on a landsection (3)";
+     		td:hasrequiredMoisture "80";
+        .
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-4> hmas:contains ?newCrop4.
+        ?newCrop4 a td:Thing, was:Crop.
+        ?newCrop4 a td:Thing, was:Corn;
+  			td:title "A crop (4) on a landsection (4)";
+     		td:hasrequiredMoisture "80";
+        .
+    }.
+} WHERE {
+  	BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#crop-1")) AS ?newCrop1)
+  	BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#crop-2")) AS ?newCrop2)
+  	BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#crop-3")) AS ?newCrop3)
+  	BIND(IRI(CONCAT("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#crop-4")) AS ?newCrop4)
+}

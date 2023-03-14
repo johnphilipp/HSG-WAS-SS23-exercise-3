@@ -1,0 +1,39 @@
+PREFIX was: <https://was-course.interactions.ics.unisg.ch/farm-ontology#>
+PREFIX hmas: <https://purl.org/hmas/>
+PREFIX td: <https://www.w3.org/2019/wot/td#>
+PREFIX wotsec: <https://www.w3.org/2019/wot/security#>
+PREFIX htv: <http://www.w3.org/2011/http#>
+PREFIX hctl: <https://www.w3.org/2019/wot/hypermedia#>
+PREFIX js: <https://www.w3.org/2019/wot/json-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+INSERT {
+    GRAPH <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#>
+    {
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-1> hmas:contains ?newCoordinates1.
+        ?newCoordinates1 a td:Thing, was:Coordinates;
+  			td:title "A set of corrdinates (1) of a landsection (1)";
+            td:hasCoordinates "0,0,1,1";
+        .
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-2> hmas:contains ?newCoordinates2.
+        ?newCoordinates2 a td:Thing, was:Coordinates;
+  			td:title "A set of corrdinates (2) of a landsection (2)";
+            td:hasCoordinates "1,0,2,1";
+        .
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-3> hmas:contains ?newCoordinates3.
+        ?newCoordinates3 a td:Thing, was:Coordinates;
+  			td:title "A set of corrdinates (3) of a landsection (3)";
+            td:hasCoordinates "0,1,1,2";
+        .
+        <https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#landsection-4> hmas:contains ?newCoordinates4.
+        ?newCoordinates4 a td:Thing, was:Coordinates;
+  			td:title "A set of corrdinates (4) of a landsection (4)";
+            td:hasCoordinates "1,1,2,2";
+        .
+    }.
+} WHERE {
+  	BIND(IRI("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#coordinates-1") AS ?newCoordinates1)
+    BIND(IRI("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#coordinates-2") AS ?newCoordinates2)
+    BIND(IRI("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#coordinates-3") AS ?newCoordinates3)
+    BIND(IRI("https://sandbox-graphdb.interactions.ics.unisg.ch/was-exercise-3-philipp#coordinates-4") AS ?newCoordinates4)
+}
